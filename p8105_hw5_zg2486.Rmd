@@ -146,4 +146,27 @@ average_mu_hat_reject
 ```
 
 
+# Question 3
+```{r}
+homicide_df = 
+  read_csv("./data/homicide-data.csv") %>% 
+  mutate(
+    city_state = str_c(city, state, sep = ","),
+    resolution = case_when(
+      disposition == "Closed without arrest" ~ "unsolved",
+      disposition == "Open/No arrest"        ~ "unsolved",
+      disposition == "Closed by arrest"      ~ "solved")
+    ) %>% 
+  group_by(city_state) %>% 
+  summarise(
+     total_homicides = n(),
+     unsolved_homicides = sum(resolution == "unsolved")
+  )
+```
+
+
+
+
+
+
 
