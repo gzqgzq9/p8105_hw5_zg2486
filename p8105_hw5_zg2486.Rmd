@@ -58,6 +58,5 @@ sim_bday %>%
     x = "Group Size (n)",
     y = "Probability of Shared Birthday"
   ) 
-  
 ```
-
+From the plot, we can see the probability that at least two people in the group will share a birthday by averaging across the 10000 simulation runs increases as the sample group size become larger.
