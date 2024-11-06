@@ -4,7 +4,7 @@ output: github_document
 date: "2024-11-05"
 ---
 
-```{r}
+```{r include=FALSE}
 library(tidyverse)
 library(rvest)
 
@@ -60,6 +60,64 @@ sim_bday %>%
   ) 
 ```
 From the plot, we can see the probability that at least two people in the group will share a birthday by averaging across the 10000 simulation runs increases as the sample group size become larger.
+
+
+
+# Question 2
+```{r}
+library(broom)
+sim_mean_sd = function(n = 30, mu, sigma = 5) {
+  
+  sim_df = 
+    tibble(
+      x = rnorm(n, mean = mu, sd = sigma)
+    )
+
+  t_test_result = t.test(pull(sim_df, x), mu = mu) %>% 
+    tidy()
+
+  out_df = 
+    sim_df %>%  
+    summarize(
+      mu_hat = mean(x),
+      p_value = pull(t_test_result, p.value)
+    )
+  
+  return(out_df)
+}
+
+sim_data = 
+  expand_grid(
+    mu = 0:6,
+    iter = 1:5000
+  ) %>% 
+  mutate(reject_null = map(mu, sim_mean_sd, n = 30)) %>% 
+  unnest(reject_null)
+
+power_plot = 
+  sim_data %>% 
+  group_by(mu) %>% 
+  summarise(power = mean(p_value < 0.05)) %>% 
+  ggplot(aes(x = mu, y = power)) + 
+  geom_point() +
+  labs(
+    title = "Power of the One-Sample t-Test vs True Mean (Effect Size)",
+    x = "True Mean (mu)",
+    y = "Power"
+  )
+
+power_plot
+```
+
+
+```{r}
+average_mu_hat = 
+  sim_data %>% 
+  group_by(mu) %>% 
+  
+```
+
+
 
 
 
