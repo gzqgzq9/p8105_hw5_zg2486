@@ -156,13 +156,25 @@ homicide_df =
       disposition == "Closed without arrest" ~ "unsolved",
       disposition == "Open/No arrest"        ~ "unsolved",
       disposition == "Closed by arrest"      ~ "solved")
-    ) %>% 
+    ) 
+  
+homicide_by_states =
+  homicide_df %>% 
   group_by(city_state) %>% 
   summarise(
      total_homicides = n(),
      unsolved_homicides = sum(resolution == "unsolved")
   )
 ```
+
+Estimate the proportion of homicides that are unsolved for city of Baltimore, MD
+```{r}
+prop.test(
+  homicide_by_states %>% filter(city_state == "Baltimore,MD") %>% pull(unsolved_homicides), 
+  homicide_by_states %>% filter(city_state == "Baltimore,MD") %>% pull(total_homicides)) %>%
+  broom::tidy()
+```
+
 
 
 
