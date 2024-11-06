@@ -4,3 +4,60 @@ output: github_document
 date: "2024-11-05"
 ---
 
+```{r}
+library(tidyverse)
+library(rvest)
+
+knitr::opts_chunk$set(
+	echo = TRUE,
+	warning = FALSE,
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
+
+theme_set(theme_minimal() + theme(legend.position = "bottom"))
+
+options(
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+
+scale_colour_discrete = scale_colour_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
+
+set.seed(1)
+```
+
+# Question1
+```{r}
+birthday = function(n) {
+
+  bdays = sample(1:365, size = n, replace = TRUE)
+  
+  duplicate = length(unique(bdays)) < n
+
+  return(duplicate)
+}
+
+sim_bday = 
+  expand_grid(
+    n = 2:50,
+    iter = 1:10000
+  ) %>% 
+  mutate(probability = map(n, birthday)) %>% 
+  unnest(probability) %>% 
+  group_by(n) %>% 
+  summarise(average_prob = mean(probability))
+
+sim_bday %>% 
+  ggplot(aes(x = n, y = average_prob)) +
+  geom_point(alpha = 0.8) +
+  labs(
+    title = "Probability of Shared Birthday in a Group as Function of Group Size",
+    x = "Group Size (n)",
+    y = "Probability of Shared Birthday"
+  ) 
+  
+```
+
