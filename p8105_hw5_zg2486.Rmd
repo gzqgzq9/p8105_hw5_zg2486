@@ -114,7 +114,7 @@ power_plot
 ```
 The plot shows that power increases as the true mean (𝜇) increases, because as the true effect size (difference between the null hypothesis value and the true mean) becomes larger, it becomes easier to detect the effect, resulting in higher power.
 
-### Plot of Average estimates of𝜇̂and 𝜇̂ only in samples for which the null was rejected vs True mean
+### Plot of Average estimates of 𝜇̂and 𝜇̂ only in samples for which the null was rejected vs True mean
 ```{r}
 average_mu_hat = 
   sim_data %>% 
@@ -163,5 +163,12 @@ homicide_by_states =
 ```
 The raw data is relatively completed, with few missing value. I noticed that there is a city "Tulsa" that exist in 2 states, therefore, I will analyze the data for each city based on the new created variable `city_state`. And there is only 1 observation in "Tulsa, AL", so I will drop this.
 
-
+### Estimate the proportion of homicides that are unsolved for city of Baltimore, MD
+```{r}
+prop.test(
+  homicide_by_states %>% filter(city_state == "Baltimore,MD") %>% pull(unsolved_homicides), 
+  homicide_by_states %>% filter(city_state == "Baltimore,MD") %>% pull(total_homicides)) %>%
+  broom::tidy() %>% 
+  knitr::kable()
+```
 
