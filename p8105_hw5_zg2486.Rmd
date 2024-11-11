@@ -73,7 +73,7 @@ sim_mean_sd = function(n = 30, mu, sigma = 5) {
       x = rnorm(n, mean = mu, sd = sigma)
     )
 
-  t_test_result = t.test(pull(sim_df, x), mu = mu) %>% 
+  t_test_result = t.test(pull(sim_df, x), mu = 0) %>% 
     tidy()
 
   out_df = 
@@ -109,7 +109,7 @@ power_plot =
 
 power_plot
 ```
-
+The plot shows that power increases as the true mean (𝜇) increases, because as the true effect size (difference between the null hypothesis value and the true mean) becomes larger, it becomes easier to detect the effect, resulting in higher power.
 
 ```{r}
 average_mu_hat = 
@@ -144,41 +144,5 @@ average_mu_hat_reject =
 
 average_mu_hat_reject
 ```
-
-
-# Question 3
-```{r}
-homicide_df = 
-  read_csv("./data/homicide-data.csv") %>% 
-  mutate(
-    city_state = str_c(city, state, sep = ","),
-    resolution = case_when(
-      disposition == "Closed without arrest" ~ "unsolved",
-      disposition == "Open/No arrest"        ~ "unsolved",
-      disposition == "Closed by arrest"      ~ "solved")
-    ) 
-  
-homicide_by_states =
-  homicide_df %>% 
-  group_by(city_state) %>% 
-  summarise(
-     total_homicides = n(),
-     unsolved_homicides = sum(resolution == "unsolved")
-  )
-```
-
-Estimate the proportion of homicides that are unsolved for city of Baltimore, MD
-```{r}
-prop.test(
-  homicide_by_states %>% filter(city_state == "Baltimore,MD") %>% pull(unsolved_homicides), 
-  homicide_by_states %>% filter(city_state == "Baltimore,MD") %>% pull(total_homicides)) %>%
-  broom::tidy()
-```
-
-
-
-
-
-
 
 
