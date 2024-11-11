@@ -140,3 +140,28 @@ average_mu_hat
 The average estimate of 𝜇̂ across tests for which the null is rejected is not equal to the true mean (mu) when effect size is small, because
 
 
+# Question 3
+```{r}
+homicide_df = 
+  read_csv("./data/homicide-data.csv") %>% 
+  mutate(
+    city_state = str_c(city, state, sep = ","),
+    resolution = case_when(
+      disposition == "Closed without arrest" ~ "unsolved",
+      disposition == "Open/No arrest"        ~ "unsolved",
+      disposition == "Closed by arrest"      ~ "solved")
+  ) %>%
+  filter(city_state != "Tulsa,AL")
+
+homicide_by_states =
+  homicide_df %>% 
+  group_by(city_state) %>% 
+  summarise(
+    total_homicides = n(),
+    unsolved_homicides = sum(resolution == "unsolved")
+  )
+```
+The raw data is relatively completed, with few missing value. I noticed that there is a city "Tulsa" that exist in 2 states, therefore, I will analyze the data for each city based on the new created variable `city_state`. And there is only 1 observation in "Tulsa, AL", so I will drop this.
+
+
+
