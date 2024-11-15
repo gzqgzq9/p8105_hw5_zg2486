@@ -92,8 +92,8 @@ sim_data =
     iter = 1:5000
   ) %>% 
   mutate(reject_null = map(mu, sim_mean_sd, n = 30)) %>% 
-  unnest(reject_null) |>
-  mutate(sig_indicator = as.numeric(p_value<0.05))
+  unnest(reject_null) %>% 
+  mutate(sig_indicator = as.numeric(p_value < 0.05))
 ```
 
 #### Plot for Power vs True Mean.
@@ -113,7 +113,7 @@ power_plot =
 
 power_plot
 ```
-The plot shows that power increases as the true mean (𝜇) increases, because as the true effect size (difference between the null hypothesis value and the true mean) becomes larger, it becomes easier to detect the effect, resulting in higher power.
+The plot shows that power increases as the true mean (𝜇) increases, because as the true effect size (difference between the null hypothesis value and the true mean) becomes larger, it becomes easier to reject the null hypothesis, resulting in higher power.
 
 #### Plot of Average estimates of 𝜇̂and 𝜇̂ only in samples for which the null was rejected vs True mean
 ```{r}
@@ -138,7 +138,22 @@ average_mu_hat =
 
 average_mu_hat
 ```
-The average estimate of 𝜇̂ across tests for which the null is rejected is not equal to the true mean (mu) when effect size is small, because
+The average estimate of 𝜇̂ across tests for which the null is rejected is not equal to the true mean (mu) when effect size is small.
+
+```{r}
+sim_data %>% 
+  ggplot(aes(x = mu_hat)) +
+  geom_histogram() +
+  facet_grid(mu ~ sig_indicator) +
+  labs(
+    title = "distribution of mu_hat across different levels of true mean (μ) and significance indicator",
+    x = "mu_hat",
+    y = "Counts"
+  ) +
+  theme_minimal()
+```
+We can explain why the average of 𝜇̂ across tests for which the null is rejected is higher than the true mean of 𝜇， because for small true 𝜇, the variability in 𝜇̂ dominates, and rejection are are influenced by chance. This leads to average of 𝜇̂ is far from the true mean (𝜇). As the 𝜇increases, the power increases, and the tests better detect the true effect, leading to the average 𝜇̂ be closer to the true mean (𝜇).
+
 
 
 # Question 3
@@ -170,7 +185,7 @@ prop.test(
   homicide_by_states %>% filter(city_state == "Baltimore,MD") %>% pull(unsolved_homicides), 
   homicide_by_states %>% filter(city_state == "Baltimore,MD") %>% pull(total_homicides)) %>%
   broom::tidy() %>% 
-  knitr::kable(digits = 3)
+  knitr::kable()
 ```
 
 #### Create a tidy dataframe with estimated proportions and CIs for each city
