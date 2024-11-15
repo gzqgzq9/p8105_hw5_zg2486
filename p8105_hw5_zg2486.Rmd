@@ -113,7 +113,7 @@ power_plot =
 
 power_plot
 ```
-The plot shows that power increases as the true mean (𝜇) increases, because as the true effect size (difference between the null hypothesis value and the true mean) becomes larger, it becomes easier to reject the null hypothesis, resulting in higher power.
+The plot shows that power increases as the true mean (𝜇) increases, because as the true effect size become larger, the probability of failing to reject the null hypothesis when it is false (Type II error) decreases, leading to higher power.
 
 #### Plot of Average estimates of 𝜇̂and 𝜇̂ only in samples for which the null was rejected vs True mean
 ```{r}
